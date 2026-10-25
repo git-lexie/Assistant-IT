@@ -1,0 +1,5 @@
+{"version":"2.0.0","tasks":[
+ {"label":"XIE: dev server","type":"shell","command":"npm run dev","problemMatcher":[],"isBackground":true},
+ {"label":"XIE: test on other devices (tunnel)","type":"shell","command":"npm run tunnel","problemMatcher":[],"isBackground":true},
+ {"label":"XIE: test production + offline (tunnel)","type":"shell","command":"npm run tunnel:prod","problemMatcher":[],"isBackground":true},
+ {"label":"XIE: run tests","type":"shell","command":"npm test","problemMatcher":[]}]}

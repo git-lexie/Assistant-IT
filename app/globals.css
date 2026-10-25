@@ -1,0 +1,26 @@
+@tailwind base;@tailwind components;@tailwind utilities;
+:root{--bg:#f2f6fb;--card:#fff;--ink:#1f2d4d;--mut:#5b6b88;--line:#dbe3ef;--acc:#7c6cf0;--ok:#2fbf9f;--bad:#d9534f;--btn:#1f2d4d;--btnt:#fff}
+.dark{--bg:#0f1626;--card:#18223a;--ink:#eaf0fb;--mut:#9fb0cf;--line:#2a3856;--acc:#9a8dff;--ok:#3fd6b4;--bad:#ff7a73;--btn:#9a8dff;--btnt:#0f1626}
+body{@apply bg-bg text-ink antialiased;background-image:radial-gradient(circle at 10% 0%,rgba(124,108,240,.12),transparent 40%),radial-gradient(circle at 100% 100%,rgba(255,143,177,.12),transparent 40%);background-attachment:fixed}
+@keyframes fl{0%,100%{transform:translateY(0)}50%{transform:translateY(-6px)}}.float{animation:fl 3s ease-in-out infinite}
+@layer components{
+.card{@apply my-3 rounded-3xl border border-line bg-card p-4 shadow-sm}
+.btn{@apply rounded-full bg-btn px-4 py-2 text-sm font-bold text-btnt shadow transition active:scale-95}
+.ghost{@apply min-h-9 rounded-full border border-line px-3 py-1.5 text-sm text-ink transition active:scale-95}
+.ghost.on{@apply bg-btn text-btnt}
+.inp{@apply w-full rounded-xl border border-line bg-bg p-2.5 text-ink}
+.lbl{@apply mb-1 mt-3 block text-sm font-bold}
+.msg{@apply my-2 max-w-[92%] whitespace-pre-wrap break-words rounded-2xl px-3.5 py-2.5 md:max-w-[80%]}
+}
+@page{size:A4;margin:12mm}
+@media print{
+ *{-webkit-print-color-adjust:exact!important;print-color-adjust:exact!important}
+ html{color-scheme:light}
+ html,body{height:auto!important;background:#fff!important;background-image:none!important}
+ /* let the report flow over several pages. Only layout wrappers are touched, never SVG shapes or colored swatches */
+ .app-root,.app-root>div,.app-root main{display:block!important;height:auto!important;min-height:0!important;overflow:visible!important}
+ .app-root .overflow-auto,.app-root .overflow-x-auto{overflow:visible!important}
+ .fixed,.no-print{display:none!important}
+ .card{box-shadow:none!important;break-inside:avoid}
+ :root,.dark{--bg:#fff;--card:#fff;--ink:#000;--mut:#444;--line:#bbb}
+}

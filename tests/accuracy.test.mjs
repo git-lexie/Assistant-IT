@@ -1,0 +1,23 @@
+import test from 'node:test';import assert from 'node:assert/strict';
+import {answer,match,toks,ALL,guidesOf,guideByTitle,cueTable} from '../lib/engine.js';import {CATS} from '../lib/kb.js';
+const S=()=>({ui:{simple:true,company:'Acme',name:'XIE'},tickets:[],fixes:[],chat:[],learn:{},fb:{}});
+const top=(q,cat)=>match(toks(q),S(),cat)[0];
+test('all 202 guides are loaded and every category list adds up',()=>{assert.equal(ALL.length,202);assert.equal(CATS.reduce((n,c)=>n+guidesOf(c[0]).length,0),202)});
+test('typing a guide title finds that guide (at least 95%)',()=>{let ok=0;for(const e of ALL)if(top(e[2])[1][2]===e[2])ok++;assert.ok(ok/ALL.length>=.95,ok+'/'+ALL.length)});
+test('typing a guide\'s most distinctive keywords finds its category (at least 97%)',()=>{const df={};ALL.forEach(e=>toks(e[1]).forEach(k=>df[k]=(df[k]||0)+1));let ok=0;
+ for(const e of ALL){const q=[...new Set(toks(e[1]))].sort((a,b)=>df[a]-df[b]).slice(0,3).join(' ')+' problem';if(top(q)[1][0]===e[0])ok++}assert.ok(ok/ALL.length>=.97,ok+'/'+ALL.length)});
+const PHRASES={printer:['the printer is not working','printer no internet','my printer cannot connect to the network','printer wifi not connecting','printer says offline','printer prints blank pages','printer paper jam again','cannot print from my laptop','printer driver error','scanner not working','printer is very slow to print','printer shows error and wont print','printer says no internet connection','network printer cannot be found'],
+ wifi:['wifi connected but no internet','my wifi keeps dropping','cannot connect to wifi','wifi signal is weak in the office','no internet on my pc'],slow:['my computer is very slow','laptop freezes all the time','pc takes forever to start','computer hangs on startup'],
+ email:['outlook is not syncing','cannot send email','my mailbox is full','email stuck in outbox','outlook keeps asking for password'],account:['i forgot my password','my account is locked','cannot sign in to my account','mfa code not working','password expired'],
+ security:['i clicked a phishing link','virus on my computer','suspicious email received','ransomware message on screen','antivirus alert'],network:['cannot access shared folder','vpn will not connect','cannot reach the server','remote desktop not connecting','dns not resolving'],
+ software:['application keeps crashing','cannot install software','excel crashes when opening file','browser not loading website'],hardware:['blue screen error','laptop will not turn on','laptop battery not charging','monitor shows no signal','keyboard not working','mouse not responding'],
+ meeting:['teams meeting no audio','zoom camera not working','ip phone no dial tone','microphone not working in meeting','projector not displaying'],backup:['backup job failed','restore deleted file','cannot recover my file','backup is taking too long']};
+test('everyday phrases land in the right category without choosing one',()=>{const bad=[];for(const[c,l]of Object.entries(PHRASES))for(const q of l){const r=answer(q,S());if(r.cat!==c)bad.push(c+' | '+q+' => '+(r.cat||r.k))}assert.deepEqual(bad,[])});
+test('Windows Update question opens a Windows Update guide',()=>assert.match(answer('windows update stuck at 30%',S()).entry,/Windows Update/i));
+test('with a category chosen, every answer stays inside that category',()=>{const bad=[];for(const[c,l]of Object.entries(PHRASES))for(const q of l){const r=answer(q,S(),{cat:c});if(!r.guide||r.cat!==c)bad.push(c+' | '+q)}assert.deepEqual(bad,[])});
+test('Printer chosen: the printer phrases never reach Wi-Fi, accounts or VPN guides',()=>{for(const q of PHRASES.printer){const r=answer(q,S(),{cat:'printer'});assert.equal(r.cat,'printer',q);assert.ok(guidesOf('printer').includes(r.entry),q)}});
+test('every category can open every one of its guides directly',()=>{for(const c of CATS)for(const g of guidesOf(c[0])){const r=answer('',S(),{entry:g});assert.equal(r.entry,g);assert.equal(r.cat,c[0]);assert.ok(r.guide.steps.length>=2)}});
+test('a chosen category with an unrelated question falls back to the right guide and says so',()=>{const r=answer('my outlook email is not syncing',S(),{cat:'printer'});assert.equal(r.cat,'email');assert.equal(r.outside,true)});
+test('chosen category with vague words asks for detail instead of guessing',()=>{const r=answer('zxqv blorp',S(),{cat:'printer'});assert.equal(r.low,true)});
+test('category cue words exist for the main products',()=>{const C=cueTable();for(const w of ['printer','outlook','vpn','backup','zoom'])assert.ok(C.has(toks(w)[0]),w)});
+test('guide lookup by title works for all guides',()=>{for(const e of ALL)assert.equal(guideByTitle(e[2]),e)});

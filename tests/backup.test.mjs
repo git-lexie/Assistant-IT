@@ -1,0 +1,15 @@
+import test from 'node:test';import assert from 'node:assert/strict';
+import {encrypt,decrypt,newKey} from '../lib/backup.js';
+test('encrypted backup round-trips and hides content',async()=>{const k=newKey(),j=JSON.stringify({tickets:[{text:'secret printer ticket'}],ui:{}});const e=await encrypt(j,k);assert.ok(!e.includes('secret'));assert.equal(await decrypt(e,k),j);assert.equal(await decrypt(e,k.toLowerCase().replace(/-/g,' ')),j)});
+test('wrong key fails',async()=>{const e=await encrypt('{"a":1}',newKey());await assert.rejects(()=>decrypt(e,newKey()))});
+test('large backup encrypts',async()=>{const k=newKey(),j=JSON.stringify({x:'a'.repeat(300000)});assert.equal(await decrypt(await encrypt(j,k),k),j)});
+test('recovery key format',()=>assert.match(newKey(),/^([A-Z2-9]{4}-){3}[A-Z2-9]{4}$/));
+import {planForgot} from '../lib/backup.js';
+import fs from 'node:fs';
+test('forgot code plan: email saved => download + send, even without a recovery key',()=>{assert.deepEqual(planForgot('me@example.com','AAAA-BBBB'),{mode:'send',newKey:false});assert.deepEqual(planForgot('me@example.com',''),{mode:'send',newKey:true})});
+test('forgot code plan: no email => file only if a key exists, else erase warning',()=>{assert.equal(planForgot('','K').mode,'download');assert.equal(planForgot('not-an-email','').mode,'erase')});
+test('forgot code with a freshly made key still produces a restorable backup',async()=>{const k=newKey(),raw='{"tickets":[{"text":"a"}],"ui":{"email":"me@example.com"}}';assert.equal(await decrypt(await encrypt(raw,k),k),raw)});
+test('lock screen forgot flow downloads and emails the saved address',()=>{const s=fs.readFileSync(new URL('../components/Lock.jsx',import.meta.url),'utf8');
+ assert.match(s,/planForgot\(regMail,cfg\?\.rk\)/);assert.match(s,/deliver\(await encrypt\(rawData\(\),rk\)[^;]*plan\.mode==='send'\?regMail:''/);
+ assert.ok(s.indexOf('await deliver(')<s.indexOf('wipe()};'));assert.ok(!s.includes('canBackup'))});
+test('recovery key is created automatically once a code and an email exist',()=>{const s=fs.readFileSync(new URL('../components/XieApp.jsx',import.meta.url),'utf8');assert.match(s,/lock\.has&&!lock\.rk&&EMAIL\.test\(u\.email\|\|''\)\)lock\.newRecovery\(\)/)});

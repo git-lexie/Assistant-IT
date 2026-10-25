@@ -1,0 +1,35 @@
+{
+  "name": "assistant-xie",
+  "version": "1.0.0",
+  "private": true,
+  "scripts": {
+    "dev": "next dev",
+    "build": "next build",
+    "test": "node --test tests/engine.test.mjs tests/accuracy.test.mjs tests/report.test.mjs tests/lock.test.mjs tests/backup.test.mjs tests/update.test.mjs tests/production.test.mjs",
+    "start": "serve out -l 4173",
+    "prebuild": "node scripts/stamp.mjs && node scripts/manual.mjs",
+    "dev:lan": "next dev -H 0.0.0.0",
+    "tunnel": "node scripts/tunnel.mjs",
+    "tunnel:prod": "node scripts/tunnel.mjs --prod",
+    "manual": "node scripts/manual.mjs"
+  },
+  "dependencies": {
+    "next": "14.2.15",
+    "react": "18.3.1",
+    "react-dom": "18.3.1"
+  },
+  "devDependencies": {
+    "autoprefixer": "10.4.20",
+    "postcss": "8.4.47",
+    "tailwindcss": "3.4.13",
+    "localtunnel": "2.0.2",
+    "qrcode-terminal": "0.12.0",
+    "serve": "14.2.4"
+  },
+  "type": "module",
+  "description": "Assistant XIE: an offline IT-support assistant and friendly work companion (Next.js + Tailwind PWA).",
+  "engines": {
+    "node": ">=18.18"
+  },
+  "license": "UNLICENSED"
+}

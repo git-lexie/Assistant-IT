@@ -1,0 +1,1 @@
+module.exports={darkMode:'class',content:['./app/**/*.{js,jsx}','./components/**/*.{js,jsx}'],theme:{extend:{colors:{bg:'var(--bg)',card:'var(--card)',ink:'var(--ink)',mut:'var(--mut)',line:'var(--line)',acc:'var(--acc)',ok:'var(--ok)',bad:'var(--bad)',btn:'var(--btn)',btnt:'var(--btnt)'}}},plugins:[]};
