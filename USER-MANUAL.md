@@ -120,18 +120,28 @@ You can search tickets, filter by status, reopen a ticket, ask XIE about it agai
 - **Activation code (optional):** Settings → Security. The app asks for it every time. The 👁 icon shows or hides what you type. Choose when it locks automatically.
 - **Forgot the code?** On the lock screen tap **Forgot code**, type your registered email, and XIE downloads an **encrypted** backup, opens an email to you, and resets the app. Open the backup later with your **recovery key** (created automatically once you have a code and an email; save it when it is shown). No saved email means no backup can be sent, so add your email first.
 
-## 8. Privacy
+## 8. Using XIE without internet
+
+1. Open XIE **once while you have internet** (and install it if you like).
+2. Go to **Settings → Install on your devices** and wait for **✅ Offline mode is ready on this device**. This takes a few seconds.
+3. From then on you can switch off Wi-Fi and mobile data. Everything works: the guides, tickets, reports, voice reading, breathing breaks, backups and this manual.
+4. When you are online again and a new version is available, tap **Update now**. Your data is saved first and stays on the device.
+
+Only these extras need internet: web search, Wikipedia hints, free online translation, and sending an email. Speaking to XIE offline also needs an offline speech pack on your device; typing always works.
+
+## 9. Privacy
 
 - Tickets, fixes, chat and settings are stored **only in your browser** on your device.
 - XIE works without internet and without any account.
 - Online features are optional: search the web, Wikipedia hints for unknown topics, and free online translation of fixed app texts.
 - Use your device's screen lock too. The activation code keeps others out of the app but does not encrypt browser storage.
 
-## 9. Troubleshooting
+## 10. Troubleshooting
 
 | Problem | What to do |
 |---|---|
 | XIE does not answer correctly | Add detail: the app or device, the exact error text, when it started. Tap 👎 if wrong |
+| The screen shows but buttons do nothing without internet | Open XIE with internet, tap **Update now** if offered (or Settings → Check for updates), wait for **✅ Offline mode is ready**, then try again |
 | No voice or the wrong accent | Install a voice for your language in your device settings, then choose it in Settings → Voice |
 | Microphone does not work | Allow the microphone for the site. Chrome or Edge work best. Offline voice needs an offline speech pack |
 | Text still in English | Settings → Language → download the language pack, or connect to the internet once |
@@ -140,7 +150,7 @@ You can search tickets, filter by status, reopen a ticket, ask XIE about it agai
 | Old version is showing | Settings → Check for updates, or close and reopen the app |
 | PDF has no colours | Choose *Save as PDF* as the printer and turn on *Background graphics* if it is shown |
 
-## 10. Quick reference
+## 11. Quick reference
 
 1. Describe the problem → follow the steps → 👍 or 👎.
 2. Delayed? ⏳ In progress + reason + date.

@@ -11,7 +11,8 @@
     "dev:lan": "next dev -H 0.0.0.0",
     "tunnel": "node scripts/tunnel.mjs",
     "tunnel:prod": "node scripts/tunnel.mjs --prod",
-    "manual": "node scripts/manual.mjs"
+    "manual": "node scripts/manual.mjs",
+    "postbuild": "node scripts/precache.mjs"
   },
   "dependencies": {
     "next": "14.2.15",

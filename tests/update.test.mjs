@@ -1,7 +1,7 @@
 import test from 'node:test';import assert from 'node:assert/strict';import fs from 'node:fs';import {execSync} from 'node:child_process';
 const tpl=fs.readFileSync(new URL('../scripts/sw.template.js',import.meta.url),'utf8');
 test('service worker never takes over silently',()=>{const install=/addEventListener\('install'[\s\S]*?\}\);\n/.exec(tpl)[0];assert.ok(!install.includes('skipWaiting'));assert.match(tpl,/type==='SKIP_WAITING'/);assert.match(tpl,/__BUILD__/)});
-test('service worker never caches version.json or itself',()=>assert.match(tpl,/p==='\/sw\.js'\|\|p==='\/version\.json'/));
+test('service worker never caches version.json or itself',()=>assert.match(tpl,/u\.pathname==='\/sw\.js'\|\|u\.pathname==='\/version\.json'/));
 test('each build gets a new id in sw.js and version.json',()=>{const run=id=>{execSync('node scripts/stamp.mjs',{cwd:new URL('..',import.meta.url).pathname,env:{...process.env,VERCEL_GIT_COMMIT_SHA:id}});return[fs.readFileSync(new URL('../public/sw.js',import.meta.url),'utf8'),JSON.parse(fs.readFileSync(new URL('../public/version.json',import.meta.url),'utf8')).v]};
  const[a,va]=run('aaaa1111bbbb'),[b,vb]=run('cccc2222dddd');assert.notEqual(a,b);assert.equal(va,'aaaa1111');assert.equal(vb,'cccc2222');assert.ok(b.includes("'xie-cccc2222'"));execSync('node scripts/stamp.mjs',{cwd:new URL('..',import.meta.url).pathname,env:{...process.env,VERCEL_GIT_COMMIT_SHA:''}})});
 test('user data key and schema are stable across updates',()=>{const src=fs.readFileSync(new URL('../components/XieApp.jsx',import.meta.url),'utf8');assert.match(src,/const KEY='xie\.next\.v1'/);assert.match(src,/SCHEMA=\d+/);assert.match(src,/xie\.snapshot\.v/)});

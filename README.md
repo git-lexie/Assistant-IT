@@ -133,8 +133,18 @@ Order used for text that is not in a built-in dictionary: saved cache → on-dev
 - The companion and answer engine are rule-based, not a large language model, so unusual conversations get simpler replies.
 - Email cannot be sent silently by a web app; XIE opens the share sheet or an email draft.
 
+## Offline mode (how it works and how to verify it)
+
+- When the service worker installs, it saves a **complete copy of the app** on the device: the page, every script and style file, icons and the manual. `scripts/precache.mjs` (npm `postbuild`) writes the list of all exported files into `out/sw.js` on every build. The Vercel build log shows `precache: N files (X KB) will be saved on each device`.
+- The app is then always served from that saved copy, so it opens instantly with no signal or a weak signal ("connected, no internet"), and a new deploy can never leave a phone with old pages and missing new files. Each version has its own copy; the old copy is deleted only after the user updates.
+- **Settings → Install** shows **✅ Offline mode is ready on this device** once the copy is complete. Tell users to open the app once while online, wait for that tick, then they can switch off Wi-Fi and mobile data.
+- Data lives in the browser's storage (`localStorage`), so it works offline too. Optional online features (web search, Wikipedia hints, free translation) have a 4.5 second limit and are skipped for 2 minutes after a failure, so a dead connection never freezes the screen.
+- Test it: DevTools → **Application → Cache Storage** (a cache named `xie-<build id>` with all files), then **Network → Offline** and reload; or use `npm run tunnel:prod` on a phone and switch on airplane mode.
+- If a phone still has an older build that was not complete offline, opening the app online shows **Update available**; **Update now** (backup first) installs the complete copy.
+
 ## Troubleshooting
 
+- Page shows but buttons do nothing offline: the offline copy was incomplete (older builds). Open the app online, accept **Update available** (or Settings → Check for updates), wait for **✅ Offline mode is ready**, then try again. As a last resort download a backup, clear the site's data in the browser, reopen online, and restore the backup.
 - Old version showing: DevTools → Application → Storage → **Clear site data**.
 - Ports 3000 (dev) and 4173 (production test) differ so the offline cache never affects development.
 - Tunnel will not start: use the VS Code **PORTS** tab (see above).
